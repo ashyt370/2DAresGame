@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Player Movement")]
-    public float moveSpeed = 5f;
+    [SerializeField]
+    private float originalMoveSpeed = 5f;
+    private float moveSpeed = 5f;
 
     // Camera Settings
     private Camera camera;
@@ -52,6 +54,16 @@ public class PlayerMovement : MonoBehaviour
             rb.rotation = targetAngle;
         }
         FollowCamera();
+    }
+
+    public void SetPlayerSpeed(float s)
+    {
+        moveSpeed = s;
+    }
+
+    public void ResetSpeed()
+    {
+        moveSpeed = originalMoveSpeed;
     }
 
     private void FollowCamera()

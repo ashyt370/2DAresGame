@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public float MinDamage;
-    public float MaxDamage;
+    public float minDamage;
+    public float maxDamage;
 
-    [SerializeField]
-    private float chargeMaxTime;
+    public float chargeMaxTime;
 
-    [SerializeField]
-    private float staminaCost;
+    public float staminaCostPerSec;
+
+    public float playerSpeedWhenCharging;
 
     // Store all the enemies in the weapon range
+    [HideInInspector]
     public List<Enemy> enemyInRangeList;
 
     private void OnTriggerEnter2D(Collider2D collision)

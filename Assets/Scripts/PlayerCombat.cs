@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -9,8 +11,7 @@ public class PlayerCombat : MonoBehaviour
     public InputActionAsset inputActions;
     private InputAction attackAction;
 
-    [SerializeField]
-    private GameObject currentWeapon;
+
 
     [Header("Attack Charge")]
     private float currentChargePer = 0f;
@@ -21,11 +22,23 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Player Stats")]
     [SerializeField] private float playerHp = 100f;
-    [SerializeField] private float MaxHp = 100f;
+    [SerializeField] private float maxHp = 100f;
+
+    [SerializeField] private float playerStamina = 100f;
+    [SerializeField] private float maxStamina = 100f;
 
     [SerializeField]
-    private Slider HPSlider;
+    private float generalStaminaRegenPerSec = 30f;
+    [SerializeField]
+    private float attackStaminaRegenPerSec = 10f;
 
+    [HideInInspector]
+    public Interactable currentInteractable;
+
+    [Header("Player Weapon")]
+    [SerializeField] private List<GameObject> weaponList;
+    [SerializeField]
+    private GameObject currentWeapon;
 
     private void Awake()
     {
@@ -33,15 +46,52 @@ public class PlayerCombat : MonoBehaviour
         var actionMap = inputActions.FindActionMap("Player");
         attackAction = actionMap.FindAction("Attack");
 
+        // Bind to attack input
         attackAction.started += Attack;
         attackAction.canceled += AttackReleased;
 
+        // Bind to Interaction input
+        inputActions.FindActionMap("Player").FindAction("Interact").performed += Interact;
+        // Bind to Pause input
+        inputActions.FindActionMap("Player").FindAction("Pause").performed += PauseGame;
+
+        currentWeapon = weaponList[0];
         // Hide weapon range
-        currentWeapon.SetActive(false);
+        foreach (GameObject g in weaponList)
+        {
+            g.SetActive(false);
+        }
+    }
+
+
+    private void PauseGame(InputAction.CallbackContext obj)
+    {
+        UIManager.instance.ShowPauseMenu();
+    }
+
+    public void ChangeWeapon(int weaponID)
+    {
+        currentWeapon = weaponList[weaponID];
+        currentChargePer = 0;
+        chargedTime = 0;
+    }
+
+    private void Interact(InputAction.CallbackContext obj)
+    {
+        if (currentInteractable)
+        {
+            currentInteractable.Interact();
+        }
     }
 
     private void Update()
     {
+        if(playerStamina <= 0)
+        {
+            currentWeapon.SetActive(false);
+            RegenStamina(generalStaminaRegenPerSec);
+            return;
+        }
         // If player is attacking, calculate charging
         if(currentWeapon.activeSelf)
         {
@@ -59,25 +109,54 @@ public class PlayerCombat : MonoBehaviour
             Color color = currentWeapon.GetComponent<SpriteRenderer>().color;
             color.a = Mathf.Lerp(0, 0.8f, currentChargePer);
             currentWeapon.GetComponent<SpriteRenderer>().color = color;
+
+            CostStamina();
+            RegenStamina(attackStaminaRegenPerSec);
+            GetComponent<PlayerMovement>().SetPlayerSpeed(currentWeapon.GetComponent<Weapon>().playerSpeedWhenCharging);
         }
+        // not attacking
+        else
+        {
+            GetComponent<PlayerMovement>().ResetSpeed();
+            RegenStamina(generalStaminaRegenPerSec);
+        }
+    }
+
+    private void CostStamina()
+    {
+        playerStamina -= currentWeapon.GetComponent<Weapon>().staminaCostPerSec * Time.deltaTime;
+        UIManager.instance.UpdatePlayerStamina(playerStamina / maxStamina);
+    }
+
+    private void RegenStamina(float s)
+    {
+        playerStamina += s * Time.deltaTime;
+        UIManager.instance.UpdatePlayerStamina(playerStamina / maxStamina);
     }
 
     private void Attack(InputAction.CallbackContext context)
     {
-        currentWeapon.SetActive(true);
-        attackStartTime = Time.time;
+        if(currentWeapon)
+        {
+            currentWeapon.SetActive(true);
+            attackStartTime = Time.time;
+        }
+        
+        
     }
 
     private void AttackReleased(InputAction.CallbackContext context)
     {
-        Debug.Log("Charge Per:  " + currentChargePer);
-
+        if(!currentWeapon)
+        {
+            return;
+        }
         // Cause damage to all the enemies in range
         if(currentWeapon.GetComponent<Weapon>().enemyInRangeList.Count > 0)
         {
             foreach(Enemy e in currentWeapon.GetComponent<Weapon>().enemyInRangeList)
             {
-                e.TakeDamage(Mathf.Lerp(currentWeapon.GetComponent<Weapon>().MinDamage, currentWeapon.GetComponent<Weapon>().MaxDamage, currentChargePer));
+                e.TakeDamage(Mathf.Lerp(currentWeapon.GetComponent<Weapon>().minDamage, currentWeapon.GetComponent<Weapon>().maxDamage, currentChargePer));
             }
         }
 
@@ -88,11 +167,27 @@ public class PlayerCombat : MonoBehaviour
     public void TakeDamage(float d)
     {
         playerHp -= d;
-        UpdateHealthBar();
+        UIManager.instance.UpdatePlayerHPBar(playerHp / maxHp);
+        if(playerHp <= 0)
+        {
+            OnPlayerDead();
+        }
     }
 
-    private void UpdateHealthBar()
+    public void OnPlayerDead()
     {
-        HPSlider.value = playerHp / MaxHp;
+        UIManager.instance.ShowGameOver();
     }
+
+    public void RecoverHealth(float f)
+    {
+        playerHp += f;
+        if(playerHp > maxHp)
+        {
+            playerHp = maxHp;
+        }
+        UIManager.instance.UpdatePlayerHPBar(playerHp / maxHp);
+    }
+
+
 }

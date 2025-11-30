@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
             damageTimer += Time.fixedDeltaTime;
             if (damageTimer >= damageInterval)
             {
-                player.GetComponent<PlayerCombat>().TakeDamage(enemyDamage);
+                player.GetComponentInParent<PlayerCombat>().TakeDamage(enemyDamage);
                 damageTimer = 0f;
             }
         }
