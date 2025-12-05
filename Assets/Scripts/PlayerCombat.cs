@@ -40,6 +40,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField]
     private GameObject currentWeapon;
 
+    [Header("Player EXP")]
+    [SerializeField]
+    private float currentEXP;
+    [SerializeField]
+    private float maxEXP = 100;
+
     private void Awake()
     {
         // Bind combat action
@@ -64,11 +70,6 @@ public class PlayerCombat : MonoBehaviour
     }
 
 
-    private void PauseGame(InputAction.CallbackContext obj)
-    {
-        UIManager.instance.ShowPauseMenu();
-    }
-
     public void ChangeWeapon(int weaponID)
     {
         currentWeapon = weaponList[weaponID];
@@ -76,13 +77,6 @@ public class PlayerCombat : MonoBehaviour
         chargedTime = 0;
     }
 
-    private void Interact(InputAction.CallbackContext obj)
-    {
-        if (currentInteractable)
-        {
-            currentInteractable.Interact();
-        }
-    }
 
     private void Update()
     {
@@ -122,6 +116,20 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    public void AddExp(float exp)
+    {
+        currentEXP += exp;
+        UIManager.instance.UpdatePlayerEXP(currentEXP / maxEXP);
+
+        //If exp is full
+        if(currentEXP >= maxHp)
+        {
+            EvasionManager.instance.SetRandomEvasionPoint();
+            UIManager.instance.ShowEvacuationHint();
+        }
+        
+    }
+
     private void CostStamina()
     {
         playerStamina -= currentWeapon.GetComponent<Weapon>().staminaCostPerSec * Time.deltaTime;
@@ -132,36 +140,6 @@ public class PlayerCombat : MonoBehaviour
     {
         playerStamina += s * Time.deltaTime;
         UIManager.instance.UpdatePlayerStamina(playerStamina / maxStamina);
-    }
-
-    private void Attack(InputAction.CallbackContext context)
-    {
-        if(currentWeapon)
-        {
-            currentWeapon.SetActive(true);
-            attackStartTime = Time.time;
-        }
-        
-        
-    }
-
-    private void AttackReleased(InputAction.CallbackContext context)
-    {
-        if(!currentWeapon)
-        {
-            return;
-        }
-        // Cause damage to all the enemies in range
-        if(currentWeapon.GetComponent<Weapon>().enemyInRangeList.Count > 0)
-        {
-            foreach(Enemy e in currentWeapon.GetComponent<Weapon>().enemyInRangeList)
-            {
-                e.TakeDamage(Mathf.Lerp(currentWeapon.GetComponent<Weapon>().minDamage, currentWeapon.GetComponent<Weapon>().maxDamage, currentChargePer));
-            }
-        }
-
-        currentWeapon.GetComponent<Weapon>().ClearEnemey();
-        currentWeapon.SetActive(false);
     }
 
     public void TakeDamage(float d)
@@ -189,5 +167,60 @@ public class PlayerCombat : MonoBehaviour
         UIManager.instance.UpdatePlayerHPBar(playerHp / maxHp);
     }
 
+    public void CancelAttack()
+    {
+        currentWeapon.SetActive(false);
+    }
+    private void Attack(InputAction.CallbackContext context)
+    {
+        if (currentWeapon)
+        {
+            currentWeapon.SetActive(true);
+            attackStartTime = Time.time;
+        }
+    }
+
+    public void RemoveEnemyFromWeaponList(Enemy e)
+    {
+        currentWeapon.GetComponent<Weapon>().enemyInRangeList.Remove(e);
+    }
+    private void AttackReleased(InputAction.CallbackContext context)
+    {
+        if (!currentWeapon)
+        {
+            return;
+        }
+
+
+        List<Enemy> processEnemies = new List<Enemy>(currentWeapon.GetComponent<Weapon>().enemyInRangeList);
+
+        // Cause damage to all the enemies in range
+        if (processEnemies.Count > 0)
+        {
+            foreach (Enemy e in processEnemies)
+            {
+                if(e)
+                {
+                    e.TakeDamage(Mathf.Lerp(currentWeapon.GetComponent<Weapon>().minDamage, currentWeapon.GetComponent<Weapon>().maxDamage, currentChargePer));
+                }
+                
+            }
+        }
+
+        currentWeapon.GetComponent<Weapon>().ClearEnemey();
+        currentWeapon.SetActive(false);
+    }
+
+    private void Interact(InputAction.CallbackContext obj)
+    {
+        if (currentInteractable)
+        {
+            currentInteractable.Interact();
+        }
+    }
+    private void PauseGame(InputAction.CallbackContext obj)
+    {
+        UIManager.instance.ShowPauseMenu();
+    }
 
 }

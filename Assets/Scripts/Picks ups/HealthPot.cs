@@ -6,6 +6,6 @@ public class HealthPot : Interactable
     public override void Interact()
     {
         GameObject.Find("Player").GetComponent<PlayerCombat>().RecoverHealth(recoverAmount);
-        Destroy(this);
+        Destroy(gameObject);
     }
 }

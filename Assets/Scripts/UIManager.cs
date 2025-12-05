@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,17 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Slider playerStaminaSlider;
     [SerializeField]
+    private Slider playerEXPSlider;
+    [SerializeField]
     private GameObject interactionPopup;
+    [SerializeField]
+    private GameObject evacuationHint;
     [SerializeField]
     private GameObject pauseScreen;
     [SerializeField]
     private GameObject gameOverScreen;
+    [SerializeField]
+    private GameObject victoryScreen;
 
     private void Awake()
     {
@@ -32,6 +39,9 @@ public class UIManager : MonoBehaviour
         interactionPopup.SetActive(false);
         pauseScreen.SetActive(false);
         gameOverScreen.SetActive(false);
+        victoryScreen.SetActive(false);
+        evacuationHint.SetActive(false);
+
     }
 
     public void UpdatePlayerHPBar(float d)
@@ -42,6 +52,23 @@ public class UIManager : MonoBehaviour
     public void UpdatePlayerStamina(float d)
     {
         playerStaminaSlider.value = d;
+    }
+
+    public void UpdatePlayerEXP(float d)
+    {
+        playerEXPSlider.value = d;
+    }
+
+    public void ShowEvacuationHint()
+    {
+        evacuationHint.SetActive(true);
+        //StartCoroutine(HideEvcuationHint());
+    }
+
+    IEnumerator HideEvcuationHint()
+    {
+        yield return new WaitForSeconds(2f);
+        evacuationHint.SetActive(false);
     }
 
     public void ShowInteractionHint()
@@ -69,6 +96,12 @@ public class UIManager : MonoBehaviour
     public void ShowGameOver()
     {
         gameOverScreen.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void ShowGameVictory()
+    {
+        victoryScreen.SetActive(true);
         Time.timeScale = 0;
     }
 

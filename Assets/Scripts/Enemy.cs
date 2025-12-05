@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    public GameObject thisEnemy;
     [Header("Enemy Settings")]
     public float moveSpeed = 3f;     
     public float detectionRange = 5f; 
@@ -27,6 +28,9 @@ public class Enemy : MonoBehaviour
     private float damageInterval = 2f;
     private float damageTimer = 0f;
     private bool isPlayerInside = false;
+
+    [Header("Enemy EXP")]
+    public float gainedEXP = 100;
 
     private void Awake()
     {
@@ -93,6 +97,19 @@ public class Enemy : MonoBehaviour
     {
         hp -= damage;
         UpdateHpBar();
+
+        //If enemy dies
+        if(hp <= maxHp)
+        {
+            if(player.gameObject.GetComponentInParent<PlayerCombat>())
+            {
+                player.gameObject.GetComponentInParent<PlayerCombat>().AddExp(gainedEXP);
+                player.gameObject.GetComponentInParent<PlayerCombat>().CancelAttack();
+                player.gameObject.GetComponentInParent<PlayerCombat>().RemoveEnemyFromWeaponList(this);
+                Destroy(thisEnemy);
+            }
+
+        }
     }
 
     public void UpdateHpBar()

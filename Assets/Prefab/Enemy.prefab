@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d3c110a4e50064cb9f56d9bc05c094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  thisEnemy: {fileID: 3809433383557001999}
   moveSpeed: 4
   detectionRange: 4
   rotationSpeed: 500
@@ -115,6 +116,7 @@ MonoBehaviour:
   hpSlider: {fileID: 1362274029269756477}
   enemyDamage: 20
   damageInterval: 2
+  gainedEXP: 100
 --- !u!50 &3158046934830564960
 Rigidbody2D:
   serializedVersion: 5
