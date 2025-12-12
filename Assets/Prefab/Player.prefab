@@ -91,9 +91,9 @@ MonoBehaviour:
   inputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   maxChargeTime: 2
   playerHp: 100
-  MaxHp: 100
+  maxHp: 100
   playerStamina: 100
-  MaxStamina: 100
+  maxStamina: 100
   generalStaminaRegenPerSec: 30
   attackStaminaRegenPerSec: 10
   currentInteractable: {fileID: 0}
@@ -101,6 +101,8 @@ MonoBehaviour:
   - {fileID: 3278969006723498884}
   - {fileID: 8465031852688712140}
   currentWeapon: {fileID: 3278969006723498884}
+  currentEXP: 0
+  maxEXP: 100
 --- !u!1 &3278969006723498884
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,8 +149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d513f84992fb9449b18deb16fda6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  MinDamage: 20
-  MaxDamage: 50
+  minDamage: 100
+  maxDamage: 200
   chargeMaxTime: 2
   staminaCostPerSec: 40
   playerSpeedWhenCharging: 4
@@ -199,7 +201,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   m_Color: {r: 0.6320754, g: 0.15801886, b: 0.15801886, a: 0.24705882}
   m_FlipX: 0
@@ -382,9 +384,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4941851649178400988}
   - {fileID: 2030941935747542292}
   - {fileID: 7049925381405226162}
+  - {fileID: 4941851649178400988}
   m_Father: {fileID: 2183391556032966751}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5436981663037499171
@@ -433,7 +435,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -561,7 +563,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.6313726, g: 0.15686275, b: 0.15686275, a: 0.24705882}
   m_FlipX: 0
@@ -631,8 +633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d513f84992fb9449b18deb16fda6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  MinDamage: 70
-  MaxDamage: 200
+  minDamage: 0
+  maxDamage: 0
   chargeMaxTime: 5
   staminaCostPerSec: 40
   playerSpeedWhenCharging: 1
