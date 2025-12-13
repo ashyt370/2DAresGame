@@ -132,6 +132,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void CostStamina()
     {
+        Debug.Log("Cost Stamina");
         playerStamina -= currentWeapon.GetComponent<Weapon>().staminaCostPerSec * Time.deltaTime;
         UIManager.instance.UpdatePlayerStamina(playerStamina / maxStamina);
     }
@@ -139,6 +140,10 @@ public class PlayerCombat : MonoBehaviour
     private void RegenStamina(float s)
     {
         playerStamina += s * Time.deltaTime;
+        if(playerStamina >= maxStamina)
+        {
+            playerStamina = maxStamina;
+        }
         UIManager.instance.UpdatePlayerStamina(playerStamina / maxStamina);
     }
 

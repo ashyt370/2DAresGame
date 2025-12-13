@@ -116,7 +116,7 @@ MonoBehaviour:
   hpSlider: {fileID: 1362274029269756477}
   enemyDamage: 20
   damageInterval: 2
-  gainedEXP: 20
+  gainedEXP: 3
 --- !u!50 &3158046934830564960
 Rigidbody2D:
   serializedVersion: 5
