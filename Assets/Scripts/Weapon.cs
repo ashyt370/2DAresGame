@@ -12,6 +12,8 @@ public class Weapon : MonoBehaviour
 
     public float playerSpeedWhenCharging;
 
+    public GameObject weaponPrefab;
+
     // Store all the enemies in the weapon range
     [HideInInspector]
     public List<Enemy> enemyInRangeList;

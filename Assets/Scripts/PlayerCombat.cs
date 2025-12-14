@@ -38,7 +38,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Player Weapon")]
     [SerializeField] private List<GameObject> weaponList;
     [SerializeField]
-    private GameObject currentWeapon;
+    public GameObject currentWeapon;
 
     [Header("Player EXP")]
     [SerializeField]
