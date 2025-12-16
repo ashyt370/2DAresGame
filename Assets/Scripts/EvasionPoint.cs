@@ -40,12 +40,13 @@ public class EvasionPoint : MonoBehaviour
     {
         if(isActivated && isInRange)
         {
+            SpawnEnemies();
             if(Time.time - startedTime >= EvasionManager.instance.waitTime)
             {
                 UIManager.instance.ShowGameVictory();
-            }
-            
+            }           
         }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -66,6 +67,24 @@ public class EvasionPoint : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             isInRange = false;
+        }
+    }
+
+
+    private float spawnTimer;
+    private float spawnInterval = 2f;
+
+    public Transform enemySpawnPoint;
+    public GameObject enemyPrefab;
+    private void SpawnEnemies()
+    {
+        spawnTimer += Time.deltaTime;
+
+        if(spawnTimer >= spawnInterval)
+        {
+            GameObject e = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity,null);
+            spawnInterval = Random.Range(1f, 3f);
+            spawnTimer = 0;
         }
     }
 }

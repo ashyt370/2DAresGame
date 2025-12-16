@@ -1,17 +1,17 @@
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
     public GameObject thisEnemy;
-    [Header("Enemy Settings")]
-    public float moveSpeed = 3f;     
+    [Header("Enemy Settings")]   
     public float detectionRange = 5f; 
-    public float rotationSpeed = 500f;
-    public float stopDistance = 0.7f;
+    public float stopDistance = 1f;
 
     private Transform player;
     private Rigidbody2D rb;
+    private NavMeshAgent agent;
 
     [Header("Enemy Combat Stats")]
     [SerializeField]
@@ -32,15 +32,35 @@ public class Enemy : MonoBehaviour
     [Header("Enemy EXP")]
     public float gainedEXP = 100;
 
+    public bool isWarningEnemy = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindWithTag("Player").transform;
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
 
         UpdateHpBar();
     }
 
     private void FixedUpdate()
+    {
+        if(isWarningEnemy)
+        {
+            agent.SetDestination(player.position);
+            hpSlider.transform.position = transform.position + new Vector3(0, 1.5f, 0);
+            hpSlider.transform.rotation = Quaternion.identity;
+        }
+        else
+        {
+            ChasePlayer();
+        }
+        CheckDamage();
+    }
+
+    private void ChasePlayer()
     {
         // Get player distance
         Vector2 dir = player.position - transform.position;
@@ -52,18 +72,20 @@ public class Enemy : MonoBehaviour
             // Avoid character shaking (when its too closed)
             if (distance > stopDistance)
             {
-                dir.Normalize();
-                rb.MovePosition(rb.position + dir * moveSpeed * Time.fixedDeltaTime);
+                agent.SetDestination(player.position);
             }
             // Rotate enemy
-            float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-            rb.rotation = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.fixedDeltaTime);
+            /*            float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+                        rb.rotation = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.fixedDeltaTime);*/
         }
 
         // Keep Slider not rotated
         hpSlider.transform.position = transform.position + new Vector3(0, 1.5f, 0);
         hpSlider.transform.rotation = Quaternion.identity;
+    }
 
+    private void CheckDamage()
+    {
         //If player is inside, calculate damage when it meets the damage interval
         if (isPlayerInside)
         {

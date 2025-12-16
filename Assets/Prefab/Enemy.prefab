@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3158046934830564960}
   - component: {fileID: 109306919893739301}
   - component: {fileID: 3832829001808806955}
+  - component: {fileID: 1930357316711404076}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.21168566, g: 0.44439152, b: 0.6320754, a: 1}
   m_FlipX: 0
@@ -108,7 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   thisEnemy: {fileID: 3809433383557001999}
   moveSpeed: 4
-  detectionRange: 4
+  detectionRange: 10
   rotationSpeed: 500
   stopDistance: 1
   hp: 100
@@ -236,6 +237,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!195 &1930357316711404076
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16766051133717478}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 4.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1591442167304922969
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +463,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &8376429237381005647
 MonoBehaviour:

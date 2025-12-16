@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,13 @@ public class EvasionManager : MonoBehaviour
     public Color activatedColor;
 
     public float waitTime;
-    
+
+    [Header("For new enemies")]
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private List<Transform> spawnTranforms;
+    [SerializeField] private float spawnInterval = 2f;
+
+
 
     private void Awake()
     {
@@ -23,6 +30,7 @@ public class EvasionManager : MonoBehaviour
         }
     }
 
+    private bool isSpawning = false;
     public void SetRandomEvasionPoint()
     {
         int rand = Random.Range(0, evasionPointList.Count-1);
@@ -31,6 +39,25 @@ public class EvasionManager : MonoBehaviour
         {
             evasionPointList[rand].GetComponent<EvasionPoint>().ActivateEvasionPoint();
         }
-        
+        if (!isSpawning)
+        {
+            StartCoroutine(SpawnEnemiesRoutine());
+            isSpawning = true;
+        }
+    }
+
+    private IEnumerator SpawnEnemiesRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnInterval);
+
+            if (enemyPrefab != null && spawnTranforms.Count > 0)
+            {
+                int randIndex = Random.Range(0, spawnTranforms.Count);
+                Transform spawnPoint = spawnTranforms[randIndex];
+                Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity,null);
+            }
+        }
     }
 }
