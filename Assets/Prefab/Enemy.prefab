@@ -108,9 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   thisEnemy: {fileID: 3809433383557001999}
-  moveSpeed: 4
   detectionRange: 10
-  rotationSpeed: 500
   stopDistance: 1
   hp: 100
   maxHp: 100
@@ -118,6 +116,7 @@ MonoBehaviour:
   enemyDamage: 20
   damageInterval: 2
   gainedEXP: 3
+  isWarningEnemy: 0
 --- !u!50 &3158046934830564960
 Rigidbody2D:
   serializedVersion: 5
@@ -247,7 +246,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 4.5
+  m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
